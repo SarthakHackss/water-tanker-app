@@ -9,6 +9,8 @@ export default function DailySupply({ supplies, clients, onAddSupply, onEditSupp
   
   const [editingId, setEditingId] = useState(null);
   const [sortOrder, setSortOrder] = useState('desc');
+  const [filterStartDate, setFilterStartDate] = useState('');
+  const [filterEndDate, setFilterEndDate] = useState('');
   const [toastMessage, setToastMessage] = useState('');
 
   const handleSubmit = (e) => {
@@ -55,7 +57,11 @@ export default function DailySupply({ supplies, clients, onAddSupply, onEditSupp
     setDate(new Date().toISOString().split('T')[0]);
   };
 
-  const sortedSupplies = [...supplies].sort((a, b) => {
+  const filteredAndSortedSupplies = [...supplies].filter(s => {
+    if (filterStartDate && new Date(s.date) < new Date(filterStartDate)) return false;
+    if (filterEndDate && new Date(s.date) > new Date(filterEndDate)) return false;
+    return true;
+  }).sort((a, b) => {
     const da = new Date(a.date);
     const db = new Date(b.date);
     return sortOrder === 'desc' ? db - da : da - db;
@@ -100,8 +106,35 @@ export default function DailySupply({ supplies, clients, onAddSupply, onEditSupp
       </div>
 
       <div className="card-panel">
-        <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="panel-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <h2>Supply Log</h2>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>From:</label>
+              <input type="date" className="form-control" style={{ padding: '0.4rem 0.5rem', height: 'auto' }} value={filterStartDate} onChange={e => setFilterStartDate(e.target.value)} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>To:</label>
+              <input type="date" className="form-control" style={{ padding: '0.4rem 0.5rem', height: 'auto' }} value={filterEndDate} onChange={e => setFilterEndDate(e.target.value)} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <label style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Sort:</label>
+              <select className="form-control" style={{ padding: '0.4rem 0.5rem', height: 'auto' }} value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+                <option value="desc">Newest</option>
+                <option value="asc">Oldest</option>
+              </select>
+            </div>
+            {(filterStartDate || filterEndDate) && (
+              <button 
+                type="button" 
+                onClick={() => { setFilterStartDate(''); setFilterEndDate(''); }} 
+                className="btn btn-secondary" 
+                style={{ padding: '0.4rem 0.75rem', height: 'auto', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: 'none' }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
         <div style={{overflowX: 'auto'}}>
           <table>
@@ -127,7 +160,7 @@ export default function DailySupply({ supplies, clients, onAddSupply, onEditSupp
               </tr>
             </thead>
             <tbody>
-              {sortedSupplies.map((s, index) => {
+              {filteredAndSortedSupplies.map((s, index) => {
                 const client = clients.find(c => c.id === s.clientId) || {};
                 const total = s.tankCount * (client.rate || 0);
                 return (
@@ -183,7 +216,7 @@ export default function DailySupply({ supplies, clients, onAddSupply, onEditSupp
               })}
             </tbody>
           </table>
-          {supplies.length === 0 && <p style={{textAlign: 'center', padding: '2rem', color: 'var(--text-muted)'}}>No supply records found.</p>}
+          {filteredAndSortedSupplies.length === 0 && <p style={{textAlign: 'center', padding: '2rem', color: 'var(--text-muted)'}}>No supply records found for the selected filter.</p>}
         </div>
       </div>
       
