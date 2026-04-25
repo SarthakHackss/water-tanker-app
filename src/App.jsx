@@ -18,6 +18,12 @@ function App() {
   const [dbLoading, setDbLoading] = useState(true);
   const [dbError, setDbError] = useState(null);
 
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('tanker_auth') === 'true';
+  });
+  const [passwordInput, setPasswordInput] = useState('');
+  const [loginError, setLoginError] = useState(false);
+
   // Boot up Realtime Database Sync
   useEffect(() => {
     // Live Subscribe to Collections
@@ -79,6 +85,49 @@ function App() {
     return <div style={{display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', color: '#60a5fa', flexDirection: 'column'}}><h2>Connecting to Firebase Cloud...</h2><p>Please wait...</p></div>;
   }
 
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (passwordInput === 'Shivshambhu@123') {
+      setIsAuthenticated(true);
+      localStorage.setItem('tanker_auth', 'true');
+      setLoginError(false);
+    } else {
+      setLoginError(true);
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div style={{display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', padding: '2rem', background: 'var(--bg-main)'}}>
+        <div className="card-panel" style={{maxWidth: '400px', width: '100%', textAlign: 'center', padding: '2rem'}}>
+          <h2 style={{marginBottom: '1.5rem', color: 'var(--text-main)', lineHeight: '1.4'}}>
+            Shivshambhu Jalpuravtha<br/>
+            <span style={{fontSize: '16px', color: 'var(--text-muted)', fontWeight: 'normal'}}>Admin Login</span>
+          </h2>
+          <form onSubmit={handleLogin}>
+            <input 
+              type="password" 
+              className="form-control" 
+              placeholder="Enter Password" 
+              value={passwordInput}
+              onChange={e => setPasswordInput(e.target.value)}
+              style={{marginBottom: '1rem', width: '100%', textAlign: 'center'}}
+              autoFocus
+            />
+            {loginError && <p style={{color: '#f87171', marginBottom: '1rem', fontSize: '14px'}}>Incorrect password</p>}
+            <button type="submit" className="btn" style={{width: '100%', justifyContent: 'center'}}>Secure Login</button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('tanker_auth');
+    setPasswordInput('');
+  };
+
   return (
     <div className="app-container">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -89,6 +138,26 @@ function App() {
         {activeTab === 'clients' && <Billing clients={clients} onAddClient={addClient} onEditClient={editClient} onDeleteClient={deleteClient} />}
         {activeTab === 'autobill' && <AutoBill clients={clients} supplies={supplies} />}
       </main>
+      
+      <button 
+        onClick={handleLogout}
+        className="no-print"
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          background: 'rgba(15, 23, 42, 0.8)',
+          color: 'var(--text-muted)',
+          border: '1px solid var(--border)',
+          padding: '8px 12px',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          backdropFilter: 'blur(10px)',
+          fontSize: '12px'
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
 }
