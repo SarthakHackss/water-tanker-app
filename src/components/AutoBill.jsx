@@ -99,7 +99,7 @@ export default function AutoBill({ clients, supplies }) {
               <table className="print-table">
                 <thead>
                   <tr>
-                    <th>
+                    <th style={{ width: '15%' }}>
                       DATE
                       <button 
                         type="button"
@@ -111,11 +111,11 @@ export default function AutoBill({ clients, supplies }) {
                         <ArrowUpDown size={14} />
                       </button>
                     </th>
-                    <th>COMPANY</th>
-                    <th>LOCATION</th>
-                    <th>NO OF<br/>TANKERS</th>
-                    <th>RATE</th>
-                    <th>TOTAL<br/>AMOUNT</th>
+                    <th style={{ width: '35%' }}>COMPANY</th>
+                    <th style={{ width: '20%' }}>LOCATION</th>
+                    <th style={{ width: '10%' }}>NO OF<br/>TANKERS</th>
+                    <th style={{ width: '8%' }}>RATE</th>
+                    <th style={{ width: '12%' }}>TOTAL<br/>AMOUNT</th>
                   </tr>
                 </thead>
                 <tbody>
