@@ -68,6 +68,8 @@ function App() {
   const deleteExpense = async (id) => await deleteDoc(doc(db, "expenses", String(id)));
 
   const addClient = async (client) => await setDoc(doc(db, "clients", String(client.id)), client);
+  const editClient = async (client) => await setDoc(doc(db, "clients", String(client.id)), client);
+  const deleteClient = async (id) => await deleteDoc(doc(db, "clients", String(id)));
 
   if (dbError) {
     return <div style={{display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center', color: '#f87171', flexDirection: 'column', padding: '2rem', textAlign: 'center'}}><h2>Firebase Connection Error</h2><p>{dbError}</p></div>;
@@ -84,7 +86,7 @@ function App() {
         {activeTab === 'dashboard' && <Dashboard supplies={supplies} expenses={expenses} clients={clients} />}
         {activeTab === 'supply' && <DailySupply supplies={supplies} clients={clients} onAddSupply={addSupply} onEditSupply={editSupply} onDeleteSupply={deleteSupply} />}
         {activeTab === 'expenses' && <Expenses expenses={expenses} onAddExpense={addExpense} onEditExpense={editExpense} onDeleteExpense={deleteExpense} />}
-        {activeTab === 'clients' && <Billing clients={clients} onAddClient={addClient} />}
+        {activeTab === 'clients' && <Billing clients={clients} onAddClient={addClient} onEditClient={editClient} onDeleteClient={deleteClient} />}
         {activeTab === 'autobill' && <AutoBill clients={clients} supplies={supplies} />}
       </main>
     </div>

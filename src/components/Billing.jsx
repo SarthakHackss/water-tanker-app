@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { UserPlus, ArrowUpDown, CheckCircle } from 'lucide-react';
+import { UserPlus, ArrowUpDown, CheckCircle, Pencil, Trash2 } from 'lucide-react';
 
-export default function Clients({ clients, onAddClient }) {
+export default function Clients({ clients, onAddClient, onEditClient, onDeleteClient }) {
   const [clientSort, setClientSort] = useState('asc');
   const [toastMessage, setToastMessage] = useState('');
 
@@ -9,18 +9,50 @@ export default function Clients({ clients, onAddClient }) {
   const [newLoc, setNewLoc] = useState('');
   const [newRate, setNewRate] = useState('');
 
+  const [editingId, setEditingId] = useState(null);
+
   const handleAddClient = (e) => {
     e.preventDefault();
     if (!newName || !newLoc || !newRate) return;
-    onAddClient({
-      id: Date.now(),
-      name: newName.toUpperCase(),
-      location: newLoc.toUpperCase(),
-      rate: Number(newRate)
-    });
-    setToastMessage('Client added successfully!');
+    
+    if (editingId) {
+      onEditClient({
+        id: editingId,
+        name: newName.toUpperCase(),
+        location: newLoc.toUpperCase(),
+        rate: Number(newRate),
+        color: clients.find(c => c.id === editingId)?.color || ''
+      });
+      setToastMessage('Client updated successfully!');
+    } else {
+      onAddClient({
+        id: Date.now(),
+        name: newName.toUpperCase(),
+        location: newLoc.toUpperCase(),
+        rate: Number(newRate)
+      });
+      setToastMessage('Client added successfully!');
+    }
+    
     setTimeout(() => setToastMessage(''), 3000);
     setNewName(''); setNewLoc(''); setNewRate('');
+    setEditingId(null);
+  };
+
+  const handleEdit = (client) => {
+    setEditingId(client.id);
+    setNewName(client.name);
+    setNewLoc(client.location);
+    setNewRate(client.rate);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this client?")) {
+      onDeleteClient(id);
+      setToastMessage('Client deleted successfully!');
+      setTimeout(() => setToastMessage(''), 3000);
+    }
   };
 
   return (
@@ -32,7 +64,7 @@ export default function Clients({ clients, onAddClient }) {
 
       <div className="card-panel">
         <div className="panel-header">
-          <h2>Add New Client</h2>
+          <h2>{editingId ? 'Edit Client' : 'Add New Client'}</h2>
         </div>
         <form onSubmit={handleAddClient} className="form-grid">
           <div className="form-group">
@@ -48,7 +80,14 @@ export default function Clients({ clients, onAddClient }) {
             <input type="number" className="form-control" min="0" value={newRate} onChange={e => setNewRate(e.target.value)} />
           </div>
           <div className="form-group" style={{justifyContent: 'flex-end'}}>
-            <button type="submit" className="btn"><UserPlus size={18} /> Add Client</button>
+            {editingId && (
+              <button type="button" className="btn btn-secondary" onClick={() => {
+                setEditingId(null); setNewName(''); setNewLoc(''); setNewRate('');
+              }} style={{marginRight: '1rem', background: 'var(--bg-lighter)', color: 'var(--text-main)'}}>
+                Cancel
+              </button>
+            )}
+            <button type="submit" className="btn"><UserPlus size={18} /> {editingId ? 'Update Client' : 'Add Client'}</button>
           </div>
         </form>
       </div>
@@ -74,6 +113,7 @@ export default function Clients({ clients, onAddClient }) {
                 </th>
                 <th>Location</th>
                 <th>Contract Rate</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +132,16 @@ export default function Clients({ clients, onAddClient }) {
                   </td>
                   <td data-label="Location">{c.location}</td>
                   <td data-label="Contract Rate">₹{c.rate} / tanker</td>
+                  <td data-label="Actions">
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button onClick={() => handleEdit(c)} className="action-btn" title="Edit">
+                        <Pencil size={16} />
+                      </button>
+                      <button onClick={() => handleDelete(c.id)} className="action-btn text-danger" title="Delete">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
