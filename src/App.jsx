@@ -141,20 +141,7 @@ function App() {
       
       <button 
         onClick={handleLogout}
-        className="no-print"
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          background: 'rgba(15, 23, 42, 0.8)',
-          color: 'var(--text-muted)',
-          border: '1px solid var(--border)',
-          padding: '8px 12px',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          backdropFilter: 'blur(10px)',
-          fontSize: '12px'
-        }}
+        className="no-print logout-btn"
       >
         Logout
       </button>
