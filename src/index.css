@@ -372,53 +372,19 @@ tr:hover td { background: rgba(255, 255, 255, 0.02); }
     gap: 1rem;
   }
 
-  /* Universal Mobile Table Fix - Card Layout */
-  table, thead, tbody, th, td, tr {
-    display: block;
-    width: 100%;
+  /* Mobile Table Layout - Horizontal Scroll with Smaller Fonts */
+  th, td {
+    padding: 0.5rem !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
   }
   
-  thead {
-    display: none; /* Hide table headers on mobile */
-  }
-  
-  tr {
-    margin-bottom: 1rem;
-    background: rgba(15, 23, 42, 0.4);
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    padding: 0.5rem;
-  }
-  
-  td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: right;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.05) !important;
-    padding: 0.75rem !important;
-    white-space: normal !important;
-  }
-  
-  td:last-child {
-    border-bottom: none !important;
-  }
-  
-  td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: var(--text-muted);
-    text-align: left;
-    margin-right: 1rem;
-  }
-
   .card-panel > div[style*='overflow-x: auto'],
   div[style*='overflowX: auto'] {
-    width: 100%;
-    margin-left: 0;
-    padding-left: 0;
-    padding-right: 0;
-    overflow-x: visible !important;
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 
