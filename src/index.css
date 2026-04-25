@@ -372,27 +372,54 @@ tr:hover td { background: rgba(255, 255, 255, 0.02); }
     gap: 1rem;
   }
 
-  /* Mobile Table Layout - Fit entirely on one screen */
-  table {
-    table-layout: fixed !important;
-    width: 100% !important;
+  /* Universal Mobile Table Fix - Card Layout */
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
   }
   
-  th, td {
-    padding: 0.25rem 0.1rem !important;
-    font-size: 0.65rem !important;
+  thead {
+    display: none; /* Hide table headers on mobile */
+  }
+  
+  tr {
+    margin-bottom: 1rem;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+  }
+  
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.05) !important;
+    padding: 0.75rem !important;
     white-space: normal !important;
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
+    font-size: 0.95rem !important;
   }
   
+  td:last-child {
+    border-bottom: none !important;
+  }
+  
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: left;
+    margin-right: 1rem;
+  }
+
   .card-panel > div[style*='overflow-x: auto'],
   div[style*='overflowX: auto'] {
     width: 100%;
     margin-left: 0;
     padding-left: 0;
     padding-right: 0;
-    overflow-x: hidden !important;
+    overflow-x: visible !important;
   }
 }
 
